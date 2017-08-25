@@ -1,0 +1,73 @@
+
+- name: install packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - git
+    - zsh
+    - htop
+    - wget
+    - python-pip
+  become: yes
+  become_user: root
+
+
+- name: change bash default
+  user:
+    name: vagrant
+    shell: /bin/zsh
+  become: yes
+  become_user: root
+
+
+# - name: download oh-my-zsh install script
+#   get_url: 
+#     url: "https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh"
+#     dest: /home/vagrant/install.sh
+#   tags: [packages]
+
+
+# - name: setting permissions for install script
+#   file:
+#     path: /home/vagrant/install.sh
+#     owner: vagrant
+#     group: vagrant
+#     mode: "u+x,g+x,o+x"
+
+
+# - name: run oh-my-zsh install script
+#   command: "sh /home/vagrant/install.sh"
+
+
+# - name: remove the install script
+#   file:
+#     path: /home/vagrant/install.sh
+#     state: absent
+
+
+- name: clone oh-my-zsh
+  git:
+    repo: https://github.com/robbyrussell/oh-my-zsh.git
+    dest: /home/vagrant/.oh-my-zsh
+
+
+- name: clone oh-my-via theme
+  git:
+    repo: https://github.com/badouralix/oh-my-via.git
+    dest: /home/vagrant/.oh-my-zsh/custom/themes/oh-my-via
+
+
+- name: configure .zshrc
+  template:
+    src: .zshrc.j2
+    dest: /home/vagrant/.zshrc
+
+
+- name: configure .zsh_alias
+  template:
+    src: .zsh_alias.j2
+    dest: /home/vagrant/.zsh_alias
+
+
